@@ -119,7 +119,7 @@ const Login = ({ navigation }) => {
     const isConnected = await checkNetworkConnectivity();
     const credentials = { email: values?.email, password: values?.password };
     await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
-    // console.log(credentials);
+    console.log(credentials);
     if (isConnected) {
       try {
         if (isLoading) return;
