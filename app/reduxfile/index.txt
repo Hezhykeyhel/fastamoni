@@ -1,0 +1,2 @@
+This is our rtk query files
+This would house every of our mutations or query folders

@@ -1,0 +1,38 @@
+{
+  "expo": {
+    "name": "fastamoni",
+    "slug": "fastamoni",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./app/assets/images/splash.png",
+    "userInterfaceStyle": "automatic",
+    "splash": {
+      "image": "./app/assets/images/splash.png",
+      "resizeMode": "cover",
+      "backgroundColor": "#0088CC"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": ["**/*"],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./app/assets/images/splash.png",
+        "backgroundColor": "#0088CC"
+      },
+      "package": ""
+    },
+    "web": {
+      "favicon": "./app/assets/images/applogo.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c96ba616-22dd-4b42-a080-832d52042fcd"
+      }
+    },
+    "owner": "hezhykeyhel"
+  }
+}
