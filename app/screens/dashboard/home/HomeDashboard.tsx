@@ -15,6 +15,7 @@ import Animated, {
 
 import { exploreimg, exploreimg2, exploreimg3 } from "@/assets/images";
 import { Box, Icon, Image, Pressable, Text } from "@/components/";
+import BlurryContainer from "@/components/BlurryContainer";
 import TransactionContent from "@/components/Content/TransactionContent";
 import { wptdp } from "@/constants/";
 import { useLazyGetusersQuery } from "@/reduxfile/redux/users/service";
@@ -64,7 +65,7 @@ const HomeDashboard = ({ navigation, route }) => {
   console.log(userInforIsFetching);
 
   return (
-    <Box backgroundColor="white" flex={1} paddingTop="xl">
+    <BlurryContainer shades="blur">
       <Box
         alignItems="center"
         alignSelf="center"
@@ -215,7 +216,7 @@ const HomeDashboard = ({ navigation, route }) => {
           </Box>
         </ScrollView>
       </Box>
-    </Box>
+    </BlurryContainer>
   );
 };
 
