@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable react/no-array-index-key */
 import React, { useEffect, useState } from "react";
@@ -6,6 +7,7 @@ import { showMessage } from "react-native-flash-message";
 import Animated, { FadeInRight, Layout } from "react-native-reanimated";
 
 import { Box, Button, Image, Text } from "@/components/";
+import BlurryContainer from "@/components/BlurryContainer";
 import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
 import { useUpdateProfileMutation } from "@/reduxfile/redux/users/service";
@@ -36,7 +38,7 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
     }
     if (isError) {
       showMessage({
-        message: "Something went wrong",
+        message: "Ops!!!, Something went wrong",
         type: "danger",
       });
     }
@@ -45,7 +47,7 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
   console.log(updateData, isError);
 
   return (
-    <Box flex={1}>
+    <BlurryContainer shades="blur">
       <Box marginTop="Ml" paddingHorizontal="lg">
         <TitleComponent
           handleBackPress={() => navigation.goBack()}
@@ -152,7 +154,7 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
           </ScrollView>
         </Box>
       </Box>
-    </Box>
+    </BlurryContainer>
   );
 };
 
