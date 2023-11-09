@@ -92,8 +92,6 @@ const Login = ({ navigation }) => {
     setCheckBiometrics(isBiometricAvailable);
   };
 
-  console.log(JSON.stringify(userData));
-
   const checkBiometricAuthentication = async () => {
     const isBiometricSet = await LocalAuthentication.isEnrolledAsync();
     try {
@@ -109,10 +107,11 @@ const Login = ({ navigation }) => {
               email: storedEmail,
               password: storedPassword,
             }).then((resp: any) => {
-              if (resp?.data?.token !== null)
+              if (resp?.data?.token !== null) {
                 return navigation.replace("DashboardTab", {
                   screen: "HomeDashboard",
                 });
+              }
             });
           }
         }
@@ -133,23 +132,30 @@ const Login = ({ navigation }) => {
     const credentials = {
       email: values?.email,
       password: values?.password,
+      username: values?.username,
     };
     await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
     console.log(credentials);
     if (isConnected) {
       try {
         if (isLoading) return;
-        if (!values?.email || !values?.password) {
+        if (!values.email || !values.password || !values.username) {
           return showMessage({
             message: "Please fill in all fields",
             type: "danger",
           });
         }
         await loginuser({
-          email: values?.email,
-          password: values?.password,
+          email: values?.email.trim(),
+          password: values?.password.trim(),
         }).then((resp: any) => {
           console.log(resp, "herer");
+          if (resp?.error?.data?.error) {
+            return showMessage({
+              message: `${resp?.error?.data?.error}`,
+              type: "danger",
+            });
+          }
           if (resp?.data?.token !== null)
             return navigation.replace("DashboardTab", {
               screen: "HomeDashboard",
@@ -211,17 +217,17 @@ const Login = ({ navigation }) => {
             >
               <Image height={250} source={loginimg} width={250} />
             </Box>
-            {/* <EyeTextInput
+            <EyeTextInput
               labelText="Username"
               properties={{
                 autoComplete: "off",
                 onChangeText: (text) => handleChange(text, "username"),
                 placeholder: "hezhykeyhel",
                 secureTextEntry: false,
-                value: values?.username,
+                value: values.username,
                 variant: "subHeading",
               }}
-            /> */}
+            />
             <EyeTextInput
               labelText="Email address"
               properties={{
