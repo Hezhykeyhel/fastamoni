@@ -1,7 +1,7 @@
 /* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
 import { showMessage } from "react-native-flash-message";
 
@@ -23,45 +23,53 @@ const UserSignUp = ({ navigation }) => {
   const [handleRegisterTrigger, result] = useRegisterMutation();
 
   const handleSubmit = async () => {
-    if (!values.email) {
-      return showMessage({
-        message: "Enter your email address",
-        type: "danger",
-      });
-    }
-
-    if (!values.password) {
-      return showMessage({
-        message: "Enter your password",
-        type: "danger",
-      });
-    }
-    if (!values.password2) {
-      return showMessage({
-        message: "Re-enter your password",
-        type: "danger",
-      });
-    }
-    if (values.password2 !== values.password) {
-      return showMessage({
-        message: "Passwords do not match",
-        type: "danger",
-      });
-    }
-    await handleRegisterTrigger({
-      email: values?.email,
-      password: values?.password,
-    }).then((resp: any) => {
-      console.log(resp);
-      if (resp?.data?.token !== null) {
-        return navigation.replace("RegistrationWelcomePage");
+    try {
+      if (!values.email) {
+        return showMessage({
+          message: "Enter your email address",
+          type: "danger",
+        });
       }
+
+      if (!values.password) {
+        return showMessage({
+          message: "Enter your password",
+          type: "danger",
+        });
+      }
+      if (!values.password2) {
+        return showMessage({
+          message: "Re-enter your password",
+          type: "danger",
+        });
+      }
+      if (values.password2 !== values.password) {
+        return showMessage({
+          message: "Passwords do not match",
+          type: "danger",
+        });
+      }
+      await handleRegisterTrigger({
+        email: values?.email,
+        password: values?.password,
+      });
+    } catch (error: any) {
+      console.log(error, "hot");
+    }
+  };
+
+  useEffect(() => {
+    if (result.data) {
+      console.log(JSON.stringify(result.data));
+      return navigation.replace("RegistrationWelcomePage");
+    }
+    if (result.isError) {
       return showMessage({
-        message: `${resp?.error?.data?.error as string}`,
+        message: `${result.error.data.error as string}`,
         type: "danger",
       });
-    });
-  };
+    }
+  }, [result.data, result.isError]);
 
   return (
     <BlurryContainer shades="blur">

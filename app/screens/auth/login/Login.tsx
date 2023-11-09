@@ -198,7 +198,7 @@ const Login = ({ navigation }) => {
   return (
     <BlurryContainer shades="blur">
       <Box>
-        {userData === undefined && !isAuthenticated ? (
+        {getValues === null && !isAuthenticated ? (
           <Box marginTop="Ml" paddingHorizontal="md">
             <Box>
               <TitleComponent
@@ -277,7 +277,10 @@ const Login = ({ navigation }) => {
         ) : (
           <Box marginTop="xxl" paddingHorizontal="md">
             <Box>
-              <TitleComponent handleBackPress={() => {}} title="Sign In" />
+              <TitleComponent
+                handleBackPress={() => navigation.goBack()}
+                title="Sign In"
+              />
             </Box>
             <Box
               alignItems="center"

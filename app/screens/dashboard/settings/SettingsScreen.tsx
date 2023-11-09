@@ -13,11 +13,7 @@ const SettingsScreen = ({ navigation }) => (
         title="Settings Screen"
       />
 
-      <Tile
-        icon="right_arrow"
-        onProceed={() => {}}
-        text="Set transaction PIN"
-      />
+      <Tile icon="right_arrow" onProceed={() => {}} text="Change password" />
     </Box>
   </BlurryContainer>
 );
