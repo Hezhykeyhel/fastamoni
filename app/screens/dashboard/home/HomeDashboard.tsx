@@ -91,7 +91,7 @@ const HomeDashboard = ({ navigation, route }) => {
           </Animated.View>
         )}
       </Box>
-      <Box flex={1}>
+      <Box flex={1} paddingTop="lg">
         {/* Top navigation and title */}
 
         <Box
