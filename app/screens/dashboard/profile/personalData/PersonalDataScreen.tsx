@@ -9,6 +9,7 @@ import * as FileSystem from "expo-file-system";
 import * as ImagePicker from "expo-image-picker";
 import React, { useEffect, useState } from "react";
 import { Platform, ScrollView, TouchableOpacity } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import Toast from "react-native-toast-message";
 
 import { Box, Button, Icon, Image } from "@/components/";
@@ -61,10 +62,9 @@ const PersonalDataScreen = ({ navigation }) => {
       const fileInfo = await getFileInfo(assets[0].uri);
 
       if (!fileInfo?.exists) {
-        Toast.show({
-          position: "top",
-          text1: "Oh no !!! an error occurred",
-          type: "error",
+        showMessage({
+          message: "Oh no !!! an error occurred",
+          type: "danger",
         });
         return;
       }
@@ -75,21 +75,21 @@ const PersonalDataScreen = ({ navigation }) => {
           response = response.replace("file:///", "").replace("file://", "");
           response = response.replaceAll("%20", " ");
           setImage(response);
-          Toast.show({
-            text1: "Yippie !!! Image successfully uploaded",
+          showMessage({
+            message: "Yippie !!! Image successfully uploaded",
             type: "success",
           });
         }
-        Toast.show({
-          text1: "Yippie !!! Image successfully uploaded",
+        showMessage({
+          message: "Yippie !!! Image successfully uploaded",
           type: "success",
         });
         setImage(assets[0].uri);
       }
       // Save or process with the result.assets[0].uri
     } catch (error) {
-      Toast.show({
-        text1: `${error as string}`,
+      showMessage({
+        message: `${error as string}`,
         type: "warning",
       });
     }
@@ -98,21 +98,21 @@ const PersonalDataScreen = ({ navigation }) => {
   const triggerUpdateProfile = () => {
     try {
       if (!values?.first_name) {
-        return Toast.show({
-          text1: "Please enter your first name",
-          type: "error",
+        return showMessage({
+          message: "Please enter your first name",
+          type: "danger",
         });
       }
       if (!values?.email) {
-        return Toast.show({
-          text1: "Please enter your email",
-          type: "error",
+        return showMessage({
+          message: "Please enter your email",
+          type: "danger",
         });
       }
       if (!values?.country) {
-        return Toast.show({
-          text1: "Please enter your country",
-          type: "error",
+        return showMessage({
+          message: "Please enter your country",
+          type: "danger",
         });
       }
       updateProfile({
@@ -129,17 +129,14 @@ const PersonalDataScreen = ({ navigation }) => {
           return navigation.navigate("PersonalDataSuccess");
         }
         if (response?.data?.message !== "User updated successfully") {
-          Toast.show({
-            text1: "Something went wrong, please try again",
-            type: "error",
+          showMessage({
+            message: "Something went wrong, please try again",
+            type: "danger",
           });
         }
       });
     } catch (error) {
-      Toast.show({
-        text1: `${error as string}`,
-        type: "error",
-      });
+      console.log(error);
     }
   };
 

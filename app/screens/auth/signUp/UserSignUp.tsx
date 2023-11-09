@@ -1,8 +1,9 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable consistent-return */
 import React, { useState } from "react";
 import { ScrollView } from "react-native";
-import { Toast } from "react-native-toast-message/lib/src/Toast";
+import { showMessage } from "react-native-flash-message";
 
 import { Box, Button, Text } from "@/components/";
 import BlurryContainer from "@/components/BlurryContainer";
@@ -23,28 +24,28 @@ const UserSignUp = ({ navigation }) => {
 
   const handleSubmit = async () => {
     if (!values.email) {
-      return Toast.show({
-        text1: "Enter your email address",
-        type: "error",
+      return showMessage({
+        message: "Enter your email address",
+        type: "danger",
       });
     }
 
     if (!values.password) {
-      return Toast.show({
-        text1: "Enter your password",
-        type: "error",
+      return showMessage({
+        message: "Enter your password",
+        type: "danger",
       });
     }
     if (!values.password2) {
-      return Toast.show({
-        text1: "Re-enter your password",
-        type: "error",
+      return showMessage({
+        message: "Re-enter your password",
+        type: "danger",
       });
     }
     if (values.password2 !== values.password) {
-      return Toast.show({
-        text1: "Passwords do not match",
-        type: "error",
+      return showMessage({
+        message: "Passwords do not match",
+        type: "danger",
       });
     }
     await handleRegisterTrigger({
@@ -55,9 +56,9 @@ const UserSignUp = ({ navigation }) => {
       if (resp?.data?.token !== null) {
         return navigation.replace("RegistrationWelcomePage");
       }
-      return Toast.show({
-        text1: `${resp?.error?.data?.error as string}`,
-        type: "error",
+      return showMessage({
+        message: `${resp?.error?.data?.error as string}`,
+        type: "danger",
       });
     });
   };
