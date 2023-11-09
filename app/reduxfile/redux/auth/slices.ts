@@ -11,8 +11,8 @@ import { AuthResponse } from "./services.types";
 
 export interface LoginInitialState {
   status: "login" | "login-success" | "login-error" | "idle";
-  userData: AuthResponse["user"] | null;
-  token: AuthResponse["access_token"] | null;
+  userData: AuthResponse | any;
+  token: AuthResponse | any;
   isAuthenticated: boolean;
 }
 
@@ -31,17 +31,18 @@ export const userSlice = createSlice({
     builder.addMatcher(
       fastamoniApi.endpoints.login.matchFulfilled,
       (state, { payload }) => {
-        const { user, access_token } = payload;
-        if (user === null) {
+        const { token } = payload;
+        if (!token) {
           state.status = "login-error";
           state.isAuthenticated = false;
           state.token = null;
+          state.userData = null;
           return;
         }
         state.status = "login-success";
         state.isAuthenticated = true;
-        state.userData = user;
-        state.token = access_token;
+        state.userData = token;
+        state.token = token;
       },
     );
     builder.addMatcher(fastamoniApi.endpoints.login.matchRejected, (state) => {

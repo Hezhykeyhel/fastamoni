@@ -1,11 +1,12 @@
 import React from "react";
 
 import { Box } from "@/components/";
+import BlurryContainer from "@/components/BlurryContainer";
 import Tile from "@/components/Tile";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
 
 const SettingsScreen = ({ navigation }) => (
-  <Box backgroundColor="white" flex={1}>
+  <BlurryContainer shades="blur">
     <Box marginTop="Ml" paddingHorizontal="lg">
       <TitleComponent
         handleBackPress={() => navigation.goBack()}
@@ -18,7 +19,7 @@ const SettingsScreen = ({ navigation }) => (
         text="Set transaction PIN"
       />
     </Box>
-  </Box>
+  </BlurryContainer>
 );
 
 export default SettingsScreen;

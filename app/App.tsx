@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 import "./i18n";
 
 import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
@@ -6,10 +7,10 @@ import { focusManager } from "@tanstack/react-query";
 import { StatusBar } from "expo-status-bar";
 import React from "react";
 import { AppStateStatus } from "react-native";
+import FlashMessage from "react-native-flash-message";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { SafeAreaProvider } from "react-native-safe-area-context";
 import { enableScreens } from "react-native-screens";
-import Toast from "react-native-toast-message";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
 
@@ -47,7 +48,11 @@ export default function App() {
               <SafeAreaProvider>
                 <BottomSheetModalProvider>
                   <Navigation />
-                  <Toast topOffset={200} />
+                  <FlashMessage
+                    duration={3000}
+                    position="top"
+                    statusBarHeight={70}
+                  />
                 </BottomSheetModalProvider>
               </SafeAreaProvider>
               <StatusBar style="dark" />

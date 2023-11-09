@@ -1,11 +1,13 @@
 /* eslint-disable react/no-array-index-key */
 /* eslint-disable no-promise-executor-return */
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import React, { useEffect, useRef, useState } from "react";
 import { RefreshControl, ScrollView } from "react-native";
 import { useDispatch } from "react-redux";
 
 import { Box, Icon, Pressable, Text } from "@/components/";
+import BlurryContainer from "@/components/BlurryContainer";
 import LogoutModal from "@/components/Modals/Logout";
 import Tile from "@/components/Tile";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
@@ -24,6 +26,16 @@ const ProfileScreen = ({ navigation }) => {
   const dispatch = useDispatch();
   const [getUserInfo, userInfoData] = useLazyUserInfoQuery();
   const [showPullDownToRefresh, setShowPullDownToRefresh] = useState(false);
+  const [getValues, setGetValues] = useState<any>();
+
+  const getItems = async () => {
+    const storedCredentials = await AsyncStorage.getItem("credentials");
+    setGetValues(JSON.parse(storedCredentials as any));
+  };
+
+  useEffect(() => {
+    getItems();
+  }, []);
 
   const onRefresh = React.useCallback(() => {
     getUserInfo();
@@ -34,7 +46,7 @@ const ProfileScreen = ({ navigation }) => {
     getUserInfo();
   }, [getUserInfo]);
   return (
-    <Box backgroundColor="white">
+    <BlurryContainer shades="blur">
       <Box marginTop="Ml" paddingHorizontal="lg">
         <TitleComponent
           handleBackPress={() => navigation.goBack()}
@@ -73,13 +85,9 @@ const ProfileScreen = ({ navigation }) => {
           <Box alignItems="center" justifyContent="center" marginTop="lg">
             <Icon name="no_profile" size={95} />
             <Text fontSize={30} textTransform="capitalize" variant="header">
-              Tommy Brooke
-              {/* {`${userInfoData?.data?.user?.first_name} ${userInfoData?.data?.user?.last_name}`} */}
+              {getValues?.username}
             </Text>
-            <Text variant="boldBody">
-              {/* {`${userInfoData?.data?.user?.email}`} */}
-              Tommybrooke@gmail.com
-            </Text>
+            <Text variant="boldBody">{getValues?.email}</Text>
           </Box>
           <Box marginTop="lg">
             <Tile
@@ -134,7 +142,7 @@ const ProfileScreen = ({ navigation }) => {
           }}
         />
       </Box>
-    </Box>
+    </BlurryContainer>
   );
 };
 

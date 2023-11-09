@@ -12,11 +12,11 @@ import { Platform, ScrollView, TouchableOpacity } from "react-native";
 import Toast from "react-native-toast-message";
 
 import { Box, Button, Icon, Image } from "@/components/";
-import BlurryBottomContainer from "@/components/BlurryBottomContainer";
+import BlurryContainer from "@/components/BlurryContainer";
 import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
 import DropDown from "@/components/Modals/DropDown";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
-import { useUpdateProfileMutation } from "@/reduxfile/redux/updateProfile/service";
+import { useUpdateProfileMutation } from "@/reduxfile/redux/users/service";
 
 import { UpdateProfile, UpdateProfileInitValues } from "./types/profileTypes";
 
@@ -144,7 +144,7 @@ const PersonalDataScreen = ({ navigation }) => {
   };
 
   return (
-    <BlurryBottomContainer shades="bottomBlur">
+    <BlurryContainer shades="blur">
       <Box marginHorizontal="md" marginTop="Ml">
         <TitleComponent
           handleBackPress={() => navigation.goBack()}
@@ -215,7 +215,7 @@ const PersonalDataScreen = ({ navigation }) => {
           <Toast />
         </ScrollView>
       </Box>
-    </BlurryBottomContainer>
+    </BlurryContainer>
   );
 };
 

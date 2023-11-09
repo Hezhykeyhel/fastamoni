@@ -5,7 +5,7 @@ import { ScrollView } from "react-native";
 import { Toast } from "react-native-toast-message/lib/src/Toast";
 
 import { Box, Button, Text } from "@/components/";
-import BlurryBottomContainer from "@/components/BlurryBottomContainer";
+import BlurryContainer from "@/components/BlurryContainer";
 import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
 import TextInput from "@/components/TextInput";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
@@ -22,12 +22,6 @@ const UserSignUp = ({ navigation }) => {
   const [handleRegisterTrigger, result] = useRegisterMutation();
 
   const handleSubmit = async () => {
-    if (!values.username) {
-      return Toast.show({
-        text1: "Please enter your username",
-        type: "error",
-      });
-    }
     if (!values.email) {
       return Toast.show({
         text1: "Enter your email address",
@@ -43,7 +37,7 @@ const UserSignUp = ({ navigation }) => {
     }
     if (!values.password2) {
       return Toast.show({
-        text1: "Re-enter your already declared password",
+        text1: "Re-enter your password",
         type: "error",
       });
     }
@@ -56,21 +50,20 @@ const UserSignUp = ({ navigation }) => {
     await handleRegisterTrigger({
       email: values?.email,
       password: values?.password,
-      username: values?.username,
     }).then((resp: any) => {
       console.log(resp);
-      if (resp?.error?.data?.error !== null) {
-        return Toast.show({
-          text1: `${resp?.error?.data?.error as string}`,
-          type: "error",
-        });
+      if (resp?.data?.token !== null) {
+        return navigation.replace("RegistrationWelcomePage");
       }
-      // return navigation.replace("RegistrationWelcomePage");
+      return Toast.show({
+        text1: `${resp?.error?.data?.error as string}`,
+        type: "error",
+      });
     });
   };
 
   return (
-    <BlurryBottomContainer shades="bottomBlur">
+    <BlurryContainer shades="blur">
       <Box marginTop="Ml" paddingHorizontal="md">
         <TitleComponent
           handleBackPress={() => navigation.goBack()}
@@ -81,25 +74,6 @@ const UserSignUp = ({ navigation }) => {
           scrollEnabled={!selectCategory}
           showsVerticalScrollIndicator={false}
         >
-          <Box
-            backgroundColor="lightGrey"
-            borderRadius={100}
-            height={70}
-            marginBottom="sm"
-            paddingHorizontal="md"
-            paddingVertical="sm"
-          >
-            <Text color="textColorTint" variant="boldBody">
-              Username
-            </Text>
-            <TextInput
-              autoComplete="off"
-              onChangeText={(text) => handleChange(text, "username")}
-              placeholder="hezhykeys"
-              value={values.username}
-              variant="boldBody"
-            />
-          </Box>
           <Box
             backgroundColor="lightGrey"
             borderRadius={100}
@@ -160,7 +134,7 @@ const UserSignUp = ({ navigation }) => {
           </Text>
         </ScrollView>
       </Box>
-    </BlurryBottomContainer>
+    </BlurryContainer>
   );
 };
 

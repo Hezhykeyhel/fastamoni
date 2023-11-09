@@ -7,33 +7,35 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import * as LocalAuthentication from "expo-local-authentication";
 import React, { useEffect, useState } from "react";
-import Toast from "react-native-toast-message";
+import { showMessage } from "react-native-flash-message";
 import { useDispatch, useSelector } from "react-redux";
 
 import { loginimg } from "@/assets/images";
 import { Box, Button, Icon, Image, Pressable, Text } from "@/components/";
-import BlurryBottomContainer from "@/components/BlurryBottomContainer";
+import BlurryContainer from "@/components/BlurryContainer";
 import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
 import { useLoginMutation } from "@/reduxfile/redux/auth/service";
 import { RootState } from "@/store/store";
 
 type MyFormValues = {
+  username: string;
   email: string;
   password: string;
 };
 const InitialValues: MyFormValues = {
   email: "",
   password: "",
+  username: "",
 };
 
 const checkNetworkConnectivity = async () => {
   const netInfo = await NetInfo.fetch();
 
   if (!netInfo.isConnected) {
-    Toast.show({
-      text1: "No network connection was detected, please try again",
-      type: "error",
+    showMessage({
+      message: "No network connection was detected, please try again",
+      type: "danger",
     });
     return false;
   }
@@ -41,9 +43,9 @@ const checkNetworkConnectivity = async () => {
   try {
     const response = await fetch("https://www.facebook.com");
     if (!response.ok) {
-      Toast.show({
-        text1: "Network failed",
-        type: "error",
+      showMessage({
+        message: "Network failed",
+        type: "danger",
       });
       return false;
     }
@@ -74,10 +76,23 @@ const Login = ({ navigation }) => {
   const [checkAuthenticate, setcheckAuthenticate] = useState(false);
   const [checkBiometrics, setCheckBiometrics] = useState(false);
 
+  const [getValues, setGetValues] = useState<any>();
+
+  const getItems = async () => {
+    const storedCredentials = await AsyncStorage.getItem("credentials");
+    setGetValues(JSON.parse(storedCredentials as any));
+  };
+
+  useEffect(() => {
+    getItems();
+  }, []);
+
   const checkBiometricAvailability = async () => {
     const isBiometricAvailable = await LocalAuthentication.hasHardwareAsync();
     setCheckBiometrics(isBiometricAvailable);
   };
+
+  console.log(JSON.stringify(userData));
 
   const checkBiometricAuthentication = async () => {
     const isBiometricSet = await LocalAuthentication.isEnrolledAsync();
@@ -93,9 +108,9 @@ const Login = ({ navigation }) => {
             password: storedPassword,
           }).then((resp: any) => {
             if (resp?.error?.data?.error !== null) {
-              return Toast.show({
-                text1: `${resp?.error?.data?.error as string}`,
-                type: "error",
+              return showMessage({
+                message: `${resp?.error?.data?.error as string}`,
+                type: "danger",
               });
             }
             // if (resp?.data?.accessToken !== null) {
@@ -117,38 +132,33 @@ const Login = ({ navigation }) => {
 
   const handleSubmit = async () => {
     const isConnected = await checkNetworkConnectivity();
-    const credentials = { email: values?.email, password: values?.password };
-    await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
-    console.log(credentials);
     if (isConnected) {
       try {
         if (isLoading) return;
         if (!values?.email || !values?.password) {
-          return Toast.show({
-            text1: "Please fill in all fields",
-            type: "error",
+          return showMessage({
+            message: "Please fill in all fields",
+            type: "danger",
           });
         }
+        const credentials = {
+          email: values?.email,
+          password: values?.password,
+        };
+        await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
+        console.log(credentials);
         await loginuser({
           email: values?.email,
           password: values?.password,
         }).then((resp: any) => {
-          console.log(resp);
-          if (resp?.error?.data?.error !== null) {
-            return Toast.show({
-              text1: `${resp?.error?.data?.error as string}`,
-              type: "error",
+          console.log(resp, "herer");
+          if (resp?.data?.token !== null)
+            return navigation.replace("DashboardTab", {
+              screen: "HomeDashboard",
             });
-          }
-          return navigation.replace("DashboardTab", {
-            screen: "HomeDashboard",
-          });
         });
       } catch (error: any) {
-        Toast.show({
-          text1: `${error?.error?.data?.error as string}`,
-          type: "error",
-        });
+        console.log(error);
       }
     }
   };
@@ -159,41 +169,35 @@ const Login = ({ navigation }) => {
       try {
         if (isLoading) return;
         if (!welcomeback?.password) {
-          return Toast.show({
-            text1: "Please enter your registered password",
-            type: "error",
+          return showMessage({
+            message: "Please enter your registered password",
+            type: "danger",
           });
         }
         await loginuser({
-          email: userData?.email as string,
+          email: getValues?.email as any,
           password: welcomeback?.password,
         }).then((resp: any) => {
           console.log(resp);
-          if (resp?.error?.status === 401 || resp?.error?.status === 500) {
-            return Toast.show({
-              text1: `${resp?.error?.data?.message as string}`,
-              type: "error",
-            });
-          }
-          if (resp?.data?.accessToken !== null) {
+          if (resp?.data?.token !== null) {
             return navigation.replace("DashboardTab", {
               screen: "HomeDashboard",
             });
           }
         });
-      } catch (error) {
-        return Toast.show({
-          text1: `${error as string}`,
-          type: "error",
+      } catch (error: any) {
+        return showMessage({
+          message: `${error?.error?.data?.error as string}`,
+          type: "danger",
         });
       }
     }
   };
 
   return (
-    <BlurryBottomContainer shades="bottomBlur">
+    <BlurryContainer shades="blur">
       <Box>
-        {userData?.account_number === undefined && !isAuthenticated ? (
+        {userData === undefined && !isAuthenticated ? (
           <Box marginTop="Ml" paddingHorizontal="md">
             <Box>
               <TitleComponent
@@ -209,12 +213,23 @@ const Login = ({ navigation }) => {
             >
               <Image height={250} source={loginimg} width={250} />
             </Box>
+            {/* <EyeTextInput
+              labelText="Username"
+              properties={{
+                autoComplete: "off",
+                onChangeText: (text) => handleChange(text, "username"),
+                placeholder: "hezhykeyhel",
+                secureTextEntry: false,
+                value: values?.username,
+                variant: "subHeading",
+              }}
+            /> */}
             <EyeTextInput
               labelText="Email address"
               properties={{
                 autoComplete: "off",
                 onChangeText: (text) => handleChange(text, "email"),
-                placeholder: "opeoluwasamuel@gmail.com",
+                placeholder: "anonymous@gmail.com",
                 secureTextEntry: false,
                 value: values?.email,
                 variant: "subHeading",
@@ -235,24 +250,14 @@ const Login = ({ navigation }) => {
               />
             </Box>
             <Box marginHorizontal="md" marginTop="md">
-              <Text
-                onPress={() => navigation.navigate("ResetPin")}
-                variant="boldBody"
-              >
-                Forgot password?
-              </Text>
+              <Text variant="boldBody">Forgot password?</Text>
             </Box>
             <Box marginTop="xxl">
               <Button
                 isloading={isLoading}
                 label="Sign In"
                 loadingText="Logging in..."
-                // onPress={handleSubmit}
-                onPress={() =>
-                  navigation.replace("DashboardTab", {
-                    screen: "HomeDashboard",
-                  })
-                }
+                onPress={handleSubmit}
               />
             </Box>
 
@@ -278,7 +283,7 @@ const Login = ({ navigation }) => {
               justifyContent="center"
               marginVertical="lg"
             >
-              <Image height={127} source={loginimg} width={127} />
+              <Image height={200} source={loginimg} width={200} />
             </Box>
             <Box alignItems="center" justifyContent="center">
               <Text marginBottom="xs" variant="header">
@@ -289,7 +294,7 @@ const Login = ({ navigation }) => {
                 textTransform="capitalize"
                 variant="subHeading"
               >
-                {`${userData?.first_name} ${userData?.last_name}`}
+                {getValues?.username}
               </Text>
             </Box>
             <Box marginTop="lg">
@@ -312,15 +317,11 @@ const Login = ({ navigation }) => {
               marginHorizontal="md"
               marginTop="xs"
             >
-              <Text
-                marginRight="sm"
-                onPress={() => navigation.navigate("ResetPin")}
-                variant="subHeading"
-              >
+              <Text marginRight="sm" variant="subHeading">
                 Forgot password?
               </Text>
               <Text
-                color="primary"
+                color="purple"
                 onPress={() => navigation.navigate("LoginAnotherUser")}
                 variant="subHeading"
               >
@@ -363,7 +364,7 @@ const Login = ({ navigation }) => {
           </Box>
         )}
       </Box>
-    </BlurryBottomContainer>
+    </BlurryContainer>
   );
 };
 

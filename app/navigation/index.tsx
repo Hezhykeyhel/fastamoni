@@ -14,6 +14,7 @@ import EmailSentScreen from "@/screens/auth/resetPin/EmailSentScreen";
 import ResetPin from "@/screens/auth/resetPin/ResetPin";
 import RegistrationWelcomePage from "@/screens/auth/signUp/RegistrationWelcomePage";
 import UserSignUp from "@/screens/auth/signUp/UserSignUp";
+import HistoryScreen from "@/screens/dashboard/history/HistoryScreen";
 import PersonalDataScreen from "@/screens/dashboard/profile/personalData/PersonalDataScreen";
 import PersonalDataSuccess from "@/screens/dashboard/profile/personalData/PersonalDataSuccess";
 import { RootState } from "@/store/store";
@@ -44,6 +45,7 @@ function Navigation() {
             <Stack.Screen component={DashboardTab} name="DashboardTab" />
             <Stack.Screen component={ResetPin} name="ResetPin" />
             <Stack.Screen component={EmailSentScreen} name="EmailSentScreen" />
+            <Stack.Screen component={HistoryScreen} name="HistoryScreen" />
             <Stack.Screen
               component={PersonalDataScreen}
               name="PersonalDataScreen"
@@ -56,7 +58,6 @@ function Navigation() {
         ) : (
           <>
             <Stack.Screen component={Onboarding} name="Onboarding" />
-            <Stack.Screen component={DashboardTab} name="DashboardTab" />
             <Stack.Screen component={Login} name="UserSignIn" />
             <Stack.Screen component={UserSignUp} name="UserSignUp" />
             <Stack.Screen

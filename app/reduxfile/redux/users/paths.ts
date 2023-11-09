@@ -1,4 +1,4 @@
 export default {
-  deleteUser: (id: any) => `users/${id}`,
+  getusers: (id: any) => `users?page=${id}`,
   updateProfile: (id: any) => `users/${id}`,
 };

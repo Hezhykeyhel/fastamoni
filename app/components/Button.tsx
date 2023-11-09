@@ -55,7 +55,7 @@ function Button({
       onPress={handlePress}
       padding="md"
       type="scale"
-      width={360}
+      width={300}
     >
       {isloading ? (
         <AnimatedBox

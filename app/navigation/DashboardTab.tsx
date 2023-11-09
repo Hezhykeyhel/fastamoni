@@ -2,7 +2,6 @@ import { createMaterialBottomTabNavigator } from "@react-navigation/material-bot
 import React from "react";
 
 import MainBottomTabs, { TabType } from "@/components/Layout/MainBottomTabs";
-import HistoryScreen from "@/screens/dashboard/history/HistoryScreen";
 import HomeDashboard from "@/screens/dashboard/home/HomeDashboard";
 import ProfileScreen from "@/screens/dashboard/profile/ProfileScreen";
 import SettingsScreen from "@/screens/dashboard/settings/SettingsScreen";
@@ -20,14 +19,14 @@ const tabList: TabType<MyTabRoutes>[] = [
     svgIconName: "active_home",
     tabText: "Home",
   },
-  {
-    component: HistoryScreen,
-    id: "4564667",
-    inactiveTabIcon: "inactive_history",
-    name: "HistoryLanding",
-    svgIconName: "active_history",
-    tabText: "History",
-  },
+  // {
+  //   component: HistoryScreen,
+  //   id: "4564667",
+  //   inactiveTabIcon: "inactive_history",
+  //   name: "HistoryLanding",
+  //   svgIconName: "active_history",
+  //   tabText: "History",
+  // },
   {
     component: SettingsScreen,
     id: "686867",

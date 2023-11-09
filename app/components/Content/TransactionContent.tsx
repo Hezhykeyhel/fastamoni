@@ -1,61 +1,65 @@
 import React from "react";
+import { Platform } from "react-native";
 
 import Box, { BoxProps } from "../Box";
-import Icon, { IconName } from "../Icon";
+import Image from "../Image";
+import Pressable from "../Pressable";
 import Text from "../Text";
-import { formatMoney } from "../utility/utils";
 
 type ContentProps = {
-  icons?: IconName | any;
+  handleClick?: () => void;
   name?: string;
-  date?: string;
-  status: string;
-  price: string;
+  email: string;
   boxStyle?: BoxProps;
-  priceStatus?: "pending" | "success" | "cancelled" | "failed" | string;
+  image?: string;
 };
 
 const TransactionContent = (props: ContentProps) => {
-  const { icons, name, boxStyle, date, price, priceStatus, status } = props;
+  const { handleClick, name, boxStyle, image, email } = props;
 
   return (
-    <Box
-      alignItems="center"
-      borderRadius={8}
-      flexDirection="row"
-      justifyContent="space-between"
-      paddingVertical="sm"
-      {...boxStyle}
-    >
-      <Box alignItems="center" flexDirection="row" justifyContent="center">
-        {priceStatus === "success" && <Icon name="success_smiley" size={30} />}
-        {priceStatus === "cancelled" && (
-          <Icon name="failure_smiley" size={30} />
-        )}
-        {priceStatus === "pending" && <Icon name="pending_smiley" size={30} />}
-        {priceStatus === "failed" && <Icon name="failure_smiley" size={30} />}
-        <Box marginHorizontal="sm">
-          <Text variant="subHeading">{name}</Text>
-          <Text variant="body">{date}</Text>
-          <Text variant="body">{status}</Text>
+    <Pressable onPress={handleClick}>
+      <Box
+        alignItems="center"
+        backgroundColor="white"
+        borderRadius={4}
+        elevation={4}
+        flexDirection="row"
+        justifyContent="space-between"
+        marginVertical="sm"
+        padding="md"
+        style={{
+          borderColor: "rgba(0,0,0,0.2)",
+          elevation: 4,
+          // shadowColor: palette.transparent,
+          shadowOffset: {
+            height: Platform.OS === "ios" ? 3 : 0,
+            width: Platform.OS === "ios" ? 3 : 0,
+          },
+          shadowOpacity: Platform.OS === "ios" ? 0.1 : 0,
+          shadowRadius: Platform.OS === "ios" ? 4 : 0,
+        }}
+        {...boxStyle}
+      >
+        <Box alignItems="center" flexDirection="row" justifyContent="center">
+          <Image
+            height={50}
+            source={{ uri: image }}
+            style={{ borderRadius: 100 }}
+            width={50}
+          />
+          <Box marginHorizontal="sm">
+            <Text variant="subHeading">{name}</Text>
+            <Text variant="body">{email}</Text>
+          </Box>
         </Box>
+        <Pressable onPress={handleClick}>
+          <Text color="primary" variant="body">
+            EDIT
+          </Text>
+        </Pressable>
       </Box>
-      {priceStatus === "success" && (
-        <Text color="success" variant="subHeading">
-          {formatMoney(price)}
-        </Text>
-      )}
-      {priceStatus === "pending" && (
-        <Text color="warning" variant="subHeading">
-          {formatMoney(price)}
-        </Text>
-      )}
-      {priceStatus === "cancelled" && (
-        <Text color="red" variant="subHeading">
-          {formatMoney(price)}
-        </Text>
-      )}
-    </Box>
+    </Pressable>
   );
 };
 

@@ -1,36 +1,57 @@
 /* eslint-disable no-promise-executor-return */
 /* eslint-disable react/no-array-index-key */
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { ScrollView } from "react-native";
+import { showMessage } from "react-native-flash-message";
 import Animated, { FadeInRight, Layout } from "react-native-reanimated";
 
-import { Box, Text } from "@/components/";
+import { Box, Button, Image, Text } from "@/components/";
+import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
+import { useUpdateProfileMutation } from "@/reduxfile/redux/users/service";
 
 const wait = (timeout: number) =>
   new Promise((resolve) => setTimeout(resolve, timeout));
 
-const HistoryScreen = ({ navigation }) => {
-  // const [triggerTransaction, result] = useLazyTransactionsQuery();
-  // const { isLoading, data: transactions, isFetching } = result;
+const HistoryScreen = ({ navigation, route, onRefresh }) => {
+  const [
+    triggerUpdate,
+    { isLoading: updateInfoLoading, data: updateData, isError },
+  ] = useUpdateProfileMutation();
   const [showPullDownToRefresh, setShowPullDownToRefresh] = useState(false);
+  const { values } = route.params;
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
 
-  // const onRefresh = React.useCallback(() => {
-  //   triggerTransaction();
-  //   wait(4000).then(() => setShowPullDownToRefresh(false));
-  // }, [triggerTransaction]);
-  // useEffect(() => {
-  //   triggerTransaction();
-  // }, [triggerTransaction]);
+  useEffect(() => {
+    if (updateData) {
+      showMessage({
+        message: `User ${values.first_name} ${values.last_name} of id ${values.id}, was updated successfully`,
+        type: "success",
+      });
+      navigation.navigate("HomeDashboard", {
+        onRefresh,
+      });
+    }
+    if (isError) {
+      showMessage({
+        message: "Something went wrong",
+        type: "danger",
+      });
+    }
+  }, [updateData, isError]);
+
+  console.log(updateData, isError);
 
   return (
     <Box flex={1}>
       <Box marginTop="Ml" paddingHorizontal="lg">
         <TitleComponent
           handleBackPress={() => navigation.goBack()}
-          title="Transactions"
+          title="Edit Users"
         />
-        <Box backgroundColor="white" borderRadius={20} height="90%">
+        <Box>
           <ScrollView
             onScroll={({ nativeEvent }) => {
               const {
@@ -77,32 +98,60 @@ const HistoryScreen = ({ navigation }) => {
                 </Animated.View>
               )}
             </Box>
-            <Box marginHorizontal="md" marginTop="sm">
-              {/* {isLoading || isFetching ? (
-                <ActivityIndicator
-                  color="black"
-                  size={25}
-                  style={{ marginTop: 20 }}
-                />
-              ) : ( */}
-              {/* <Box>
-                  {transactions?.data?.map((items, index) => (
-                    <TransactionContent
-                      date={items.created_at}
-                      key={index}
-                      name={items.remarks}
-                      price={items.amount}
-                      priceStatus={items.status}
-                      status={items.status}
-                    />
-                  ))}
-                </Box>
-              )}  */}
+            <Box
+              alignItems="center"
+              justifyContent="center"
+              marginHorizontal="md"
+              marginTop="sm"
+            >
+              <Image
+                borderRadius={100}
+                height={100}
+                source={{ uri: values.avatar }}
+                width={100}
+              />
             </Box>
+            <Box height={60} />
+            <EyeTextInput
+              labelText="Edit First Name"
+              properties={{
+                onChangeText: (event) => setFirstName(event),
+                placeholder: `${values.first_name}` || firstName,
+                secureTextEntry: false,
+                value: firstName,
+              }}
+            />
+            <Box height={10} />
+            <EyeTextInput
+              labelText="Edit Last Name"
+              properties={{
+                onChangeText: (event) => setLastName(event),
+                placeholder: `${values.last_name}` || lastName,
+                secureTextEntry: false,
+                value: lastName,
+              }}
+            />
+            <Box height={10} />
+            <EyeTextInput
+              labelText="Edit Email"
+              properties={{
+                editable: false,
+                onChangeText: (event) => setEmail(event),
+                placeholder: `${values.email}` || email,
+                secureTextEntry: false,
+                value: email,
+              }}
+            />
+            <Box height={10} />
+            <Button
+              isloading={updateInfoLoading}
+              label="Update Info"
+              loadingText="Updating..."
+              onPress={() => triggerUpdate(values.id)}
+            />
           </ScrollView>
         </Box>
       </Box>
-      <Box height={100} />
     </Box>
   );
 };

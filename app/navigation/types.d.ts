@@ -5,6 +5,7 @@ export type AppNavRoutes = {
   Onboarding: undefined;
   UserSignIn: undefined;
   UserSignUp: undefined;
+  HistoryScreen: undefined;
   RegistrationWelcomePage: undefined;
   HomeScreen: undefined;
   ResetPin: undefined;

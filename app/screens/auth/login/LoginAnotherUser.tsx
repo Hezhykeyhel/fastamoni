@@ -1,3 +1,4 @@
+/* eslint-disable import/no-extraneous-dependencies */
 /* eslint-disable @typescript-eslint/no-unused-expressions */
 /* eslint-disable consistent-return */
 /* eslint-disable @typescript-eslint/no-explicit-any */
@@ -6,23 +7,24 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import NetInfo from "@react-native-community/netinfo";
 import React, { useState } from "react";
-import Toast from "react-native-toast-message";
+import { showMessage } from "react-native-flash-message";
 
 import { loginimg } from "@/assets/images";
 import { Box, Button, Image, Text } from "@/components/";
-import BlurryBottomContainer from "@/components/BlurryBottomContainer";
+import BlurryContainer from "@/components/BlurryContainer";
 import EyeTextInput from "@/components/EyeTextInput/EyeTextInput";
-import TextInput from "@/components/TextInput";
 import TitleComponent from "@/components/TitleComponent/TitleComponent";
 import { useLoginMutation } from "@/reduxfile/redux/auth/service";
 
 type MyFormValues = {
   email: string;
   password: string;
+  username: string;
 };
 const InitialValues: MyFormValues = {
   email: "",
   password: "",
+  username: "",
 };
 
 const LoginOtherAccounts = ({ navigation }) => {
@@ -37,9 +39,9 @@ const LoginOtherAccounts = ({ navigation }) => {
     const netInfo = await NetInfo.fetch();
 
     if (!netInfo.isConnected) {
-      Toast.show({
-        text1: "No network connection was detected, please try again",
-        type: "error",
+      showMessage({
+        message: "No network connection was detected, please try again",
+        type: "danger",
       });
       return false;
     }
@@ -47,9 +49,9 @@ const LoginOtherAccounts = ({ navigation }) => {
     try {
       const response = await fetch("https://www.facebook.com");
       if (!response.ok) {
-        Toast.show({
-          text1: "Network failed",
-          type: "error",
+        showMessage({
+          message: "Network failed",
+          type: "danger",
         });
         return false;
       }
@@ -63,45 +65,48 @@ const LoginOtherAccounts = ({ navigation }) => {
 
   const handleSubmit = async () => {
     const isConnected = await checkNetworkConnectivity();
-    const credentials = { email: values?.email, password: values?.password };
+    const credentials = {
+      email: values.email.trim(),
+      password: values.password.trim(),
+      username: values.username.trim(),
+    };
     await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
     // console.log(credentials);
     if (isConnected) {
       try {
-        if (isLoading) return;
-        if (!values?.email || !values?.password) {
-          return Toast.show({
-            text1: "Please fill in all fields",
-            type: "error",
+        if (!values?.email || !values?.password || !values?.username) {
+          return showMessage({
+            message: "Please fill in all fields",
+            type: "danger",
           });
         }
         await login({
-          email: values?.email,
-          password: values?.password,
+          email: values.email.trim(),
+          password: values.password.trim(),
         }).then((resp: any) => {
-          // console.log(resp);
-          if (resp?.error?.status === 401 || resp?.error?.status === 500) {
-            return Toast.show({
-              text1: `${resp?.error?.data?.message as string}`,
-              type: "error",
+          console.log(resp);
+          if (resp?.error?.data?.error) {
+            return showMessage({
+              message: `${resp?.error?.data?.error}`,
+              type: "danger",
             });
           }
-          if (resp?.data?.accessToken !== null) {
+          if (resp?.data?.token !== null) {
             return navigation.replace("DashboardTab", {
               screen: "HomeDashboard",
             });
           }
         });
       } catch (error) {
-        Toast.show({
-          text1: `${error as string}`,
-          type: "error",
+        showMessage({
+          message: `${error as string}`,
+          type: "danger",
         });
       }
     }
   };
   return (
-    <BlurryBottomContainer shades="bottomBlur">
+    <BlurryContainer shades="blur">
       <Box>
         <Box marginTop="Ml" paddingHorizontal="md">
           <Box>
@@ -118,30 +123,33 @@ const LoginOtherAccounts = ({ navigation }) => {
           >
             <Image
               borderRadius={100}
-              height={125}
+              height={150}
               source={loginimg}
-              width={125}
+              width={150}
             />
           </Box>
-          <Box
-            backgroundColor="lightGrey"
-            borderRadius={100}
-            height={70}
-            marginBottom="sm"
-            paddingHorizontal="md"
-            paddingVertical="sm"
-          >
-            <Text color="textColorTint" variant="boldBody">
-              Email address
-            </Text>
-            <TextInput
-              autoComplete="off"
-              onChangeText={(text) => handleChange(text, "email")}
-              placeholder="opeoluwasamuel@gmail.com"
-              value={values?.email}
-              variant="boldBody"
-            />
-          </Box>
+          <EyeTextInput
+            labelText="Username"
+            properties={{
+              autoComplete: "off",
+              onChangeText: (text) => handleChange(text, "username"),
+              placeholder: "hezhykeyhel",
+              secureTextEntry: false,
+              value: values?.username,
+              variant: "subHeading",
+            }}
+          />
+          <EyeTextInput
+            labelText="Email address"
+            properties={{
+              autoComplete: "off",
+              onChangeText: (text) => handleChange(text, "email"),
+              placeholder: "hezhykeyhel@gmil.com",
+              secureTextEntry: false,
+              value: values?.email,
+              variant: "subHeading",
+            }}
+          />
           <Box marginTop="xs">
             <EyeTextInput
               hasEyes
@@ -157,12 +165,7 @@ const LoginOtherAccounts = ({ navigation }) => {
             />
           </Box>
           <Box marginHorizontal="md" marginTop="md">
-            <Text
-              onPress={() => navigation.navigate("ResetPin")}
-              variant="subHeading"
-            >
-              Forgot password?
-            </Text>
+            <Text variant="subHeading">Forgot password?</Text>
           </Box>
           <Box marginTop="xxl">
             <Button
@@ -193,7 +196,7 @@ const LoginOtherAccounts = ({ navigation }) => {
           </Box>
         </Box>
       </Box>
-    </BlurryBottomContainer>
+    </BlurryContainer>
   );
 };
 

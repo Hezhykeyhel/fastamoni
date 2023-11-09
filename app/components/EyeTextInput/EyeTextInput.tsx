@@ -21,7 +21,7 @@ const EyeTextInput = (props: InputProps) => {
   return (
     <Box
       alignItems="center"
-      backgroundColor="lightGrey"
+      backgroundColor="mainBackground"
       borderRadius={100}
       flexDirection="row"
       height={70}
