@@ -70,7 +70,7 @@ const HomeDashboard = ({ navigation, route }) => {
         justifyContent="center"
         paddingTop="xxl"
         position="absolute"
-        top={20}
+        top={40}
       >
         {showPullDownToRefresh && (
           <Animated.View
