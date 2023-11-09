@@ -96,31 +96,32 @@ const Login = ({ navigation }) => {
 
   const checkBiometricAuthentication = async () => {
     const isBiometricSet = await LocalAuthentication.isEnrolledAsync();
-    if (isBiometricSet) {
-      const storedCredentials = await AsyncStorage.getItem("credentials");
-      if (storedCredentials) {
-        const credentials = JSON.parse(storedCredentials);
-        const result = await LocalAuthentication.authenticateAsync();
-        if (result.success) {
-          const { email: storedEmail, password: storedPassword } = credentials;
-          loginuser({
-            email: storedEmail,
-            password: storedPassword,
-          }).then((resp: any) => {
-            if (resp?.error?.data?.error !== null) {
-              return showMessage({
-                message: `${resp?.error?.data?.error as string}`,
-                type: "danger",
-              });
-            }
-            // if (resp?.data?.accessToken !== null) {
-            //   return navigation.replace("DashboardTab", {
-            //     screen: "HomeDashboard",
-            //   });
-            // }
-          });
+    try {
+      if (isBiometricSet) {
+        const storedCredentials = await AsyncStorage.getItem("credentials");
+        if (storedCredentials) {
+          const credentials = JSON.parse(storedCredentials);
+          const result = await LocalAuthentication.authenticateAsync();
+          if (result.success) {
+            const { email: storedEmail, password: storedPassword } =
+              credentials;
+            loginuser({
+              email: storedEmail,
+              password: storedPassword,
+            }).then((resp: any) => {
+              if (resp?.data?.token !== null)
+                return navigation.replace("DashboardTab", {
+                  screen: "HomeDashboard",
+                });
+            });
+          }
         }
       }
+    } catch (error: any) {
+      return showMessage({
+        message: `${error?.error?.data?.error as string}`,
+        type: "danger",
+      });
     }
     setcheckAuthenticate(false);
   };
