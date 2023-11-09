@@ -14,7 +14,7 @@ export const fastamoniApi = api.injectEndpoints({
     updateProfile: build.mutation<UpdateProfileResponse, void>({
       query: (credentials) => ({
         body: credentials,
-        method: "POST",
+        method: "PATCH",
         url: paths.updateProfile(credentials),
       }),
     }),

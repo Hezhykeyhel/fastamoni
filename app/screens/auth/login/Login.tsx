@@ -130,6 +130,12 @@ const Login = ({ navigation }) => {
 
   const handleSubmit = async () => {
     const isConnected = await checkNetworkConnectivity();
+    const credentials = {
+      email: values?.email,
+      password: values?.password,
+    };
+    await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
+    console.log(credentials);
     if (isConnected) {
       try {
         if (isLoading) return;
@@ -139,12 +145,6 @@ const Login = ({ navigation }) => {
             type: "danger",
           });
         }
-        const credentials = {
-          email: values?.email,
-          password: values?.password,
-        };
-        await AsyncStorage.setItem("credentials", JSON.stringify(credentials));
-        console.log(credentials);
         await loginuser({
           email: values?.email,
           password: values?.password,
@@ -184,7 +184,10 @@ const Login = ({ navigation }) => {
           }
         });
       } catch (error: any) {
-        console.log(error);
+        return showMessage({
+          message: `${error?.error?.data?.error as string}`,
+          type: "danger",
+        });
       }
     }
   };

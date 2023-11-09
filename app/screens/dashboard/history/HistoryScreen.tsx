@@ -28,6 +28,7 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
 
   useEffect(() => {
     if (updateData) {
+      console.log(updateData);
       showMessage({
         message: `User ${values.first_name} ${values.last_name} of id ${values.id}, was updated successfully`,
         type: "success",
@@ -135,7 +136,7 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
             <EyeTextInput
               labelText="Edit Email"
               properties={{
-                editable: false,
+                // editable: false,
                 onChangeText: (event) => setEmail(event),
                 placeholder: `${values.email}` || email,
                 secureTextEntry: false,
