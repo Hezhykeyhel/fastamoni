@@ -118,10 +118,7 @@ const Login = ({ navigation }) => {
         }
       }
     } catch (error: any) {
-      return showMessage({
-        message: `${error?.error?.data?.error as string}`,
-        type: "danger",
-      });
+      console.log(error);
     }
     setcheckAuthenticate(false);
   };
@@ -187,10 +184,7 @@ const Login = ({ navigation }) => {
           }
         });
       } catch (error: any) {
-        return showMessage({
-          message: `${error?.error?.data?.error as string}`,
-          type: "danger",
-        });
+        console.log(error);
       }
     }
   };
