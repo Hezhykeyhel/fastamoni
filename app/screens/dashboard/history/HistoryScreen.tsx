@@ -44,8 +44,6 @@ const HistoryScreen = ({ navigation, route, onRefresh }) => {
     }
   }, [updateData, isError]);
 
-  console.log(updateData, isError);
-
   return (
     <BlurryContainer shades="blur">
       <Box marginTop="Ml" paddingHorizontal="lg">

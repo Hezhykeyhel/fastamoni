@@ -62,8 +62,6 @@ const HomeDashboard = ({ navigation, route }) => {
     wait(2000).then(() => setShowPullDownToRefresh(false));
   }, [getUserInfo, pages]);
 
-  console.log(userInforIsFetching);
-
   return (
     <BlurryContainer shades="blur">
       <Box
