@@ -21,16 +21,16 @@
     "android": {
       "adaptiveIcon": {
         "foregroundImage": "./app/assets/images/splash.png",
-        "backgroundColor": "#0088CC"
+        "backgroundColor": "#AF7DCF"
       },
-      "package": ""
+      "package": "hezhykeyhel.fastamoni"
     },
     "web": {
       "favicon": "./app/assets/images/applogo.png"
     },
     "extra": {
       "eas": {
-        "projectId": "c96ba616-22dd-4b42-a080-832d52042fcd"
+        "projectId": "eae88f93-2d54-455c-9786-56178e2e1a7b"
       }
     },
     "owner": "hezhykeyhel"
